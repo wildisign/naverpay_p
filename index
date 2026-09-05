@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>네이버페이 앱 현장결제 리디자인 발표 슬라이드</title>
+  <!-- Pretendard Webfont CDN -->
+  <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      color: #000000;
+      border-radius: 0 !important; /* Zero corner radius */
+    }
+
+    body {
+      background-color: #f4f5f7;
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+
+    /* 1920 x 1080 Base Presentation Viewport */
+    #viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    #presentation-stage {
+      width: 1920px;
+      height: 1080px;
+      position: absolute;
+      transform-origin: center center;
+      background-color: #ffffff;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+      border-radius: 0;
+      overflow: hidden;
+    }
+
+    /* Slide Frame Base (Generous padding without head & foot) */
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 1920px;
+      height: 1080px;
+      padding: 68px 96px;
+      background-color: #ffffff;
+      display: none !important;
+      flex-direction: column;
+      justify-content: space-between;
+      opacity: 0;
+      transition: opacity 0.2s ease-in-out;
+    }
+
+    .slide.active {
+      display: flex !important;
+      opacity: 1;
+    }
+
+    /* Typography Hierarchy */
+    .headline-block {
+      margin-bottom: 22px;
+    }
+
+    .slide-kicker {
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      display: block;
+    }
+
+    .slide-title {
+      font-size: 40px;
+      font-weight: 900;
+      line-height: 1.28;
+      letter-spacing: -1px;
+      margin-bottom: 10px;
+    }
+
+    .slide-desc {
+      font-size: 18.5px;
+      font-weight: 500;
+      line-height: 1.55;
+      letter-spacing: -0.4px;
+      max-width: 1680px;
+    }
+
+    /* Content Area */
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 16px;
+      width: 100%;
+    }
+
+    /* Card System */
+    .white-card {
+      background-color: #ffffff;
+      border: 1px solid #000000; /* Black outline ONLY on white shapes */
+      border-radius: 0;
+      padding: 24px 28px;
+    }
+
+    .gray-card {
+      background-color: #f4f5f7;
+      border: none !important; /* No black outline on gray shapes */
+      border-radius: 0;
+      padding: 24px 28px;
+    }
+
+    .dark-card {
+      background-color: #333333;
+      border: none !important; /* No black outline on dark gray shapes */
+      border-radius: 0;
+      padding: 24px 28px;
+      color: #ffffff !important; /* White text on dark gray shapes */
+    }
+    .dark-card * {
+      color: #ffffff !important;
+    }
+
+    .black-card {
+      background-color: #000000;
+      border: none !important; /* No black outline on black shapes */
+      border-radius: 0;
+      padding: 24px 28px;
+      color: #ffffff !important; /* White text on black shapes */
+    }
+    .black-card * {
+      color: #ffffff !important;
+    }
+
+    /* Key Insight Banner */
+    .key-insight-banner {
+      width: 100%;
+      background-color: #f4f5f7;
+      border: none !important; /* No outline on light gray banner */
+      border-radius: 0;
+      padding: 18px 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .key-insight-banner.banner-black {
+      background-color: #000000;
+      color: #ffffff !important;
+      border: none !important;
+    }
+    .key-insight-banner.banner-black * {
+      color: #ffffff !important;
+    }
+
+    .key-insight-banner.banner-dark {
+      background-color: #333333;
+      color: #ffffff !important;
+      border: none !important;
+    }
+    .key-insight-banner.banner-dark * {
+      color: #ffffff !important;
+    }
+
+    .key-insight-kicker {
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+
+    .key-insight-text {
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.45;
+      letter-spacing: -0.4px;
+    }
+
+    /* Badges & Chips */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 12px;
+      border-radius: 0;
+      font-size: 12.5px;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .badge-white {
+      background-color: #ffffff;
+      border: 1px solid #000000; /* White shape: black outline */
+      color: #000000;
+    }
+
+    .badge-gray {
+      background-color: #f4f5f7;
+      border: none !important; /* Light gray: NO outline */
+      color: #000000;
+    }
+
+    .badge-dark {
+      background-color: #333333;
+      border: none !important; /* Dark gray: NO outline */
+      color: #ffffff !important; /* Dark gray: WHITE text */
+    }
+    .badge-dark * {
+      color: #ffffff !important;
+    }
+
+    .badge-black {
+      background-color: #000000;
+      border: none !important; /* Black: NO outline */
+      color: #ffffff !important; /* Black: WHITE text */
+    }
+    .badge-black * {
+      color: #ffffff !important;
+    }
+
+    /* Black box with white line (검은 박스 흰 라인) */
+    .badge-black-line,
+    .dark-box-white-line {
+      background-color: #000000 !important;
+      border: 1px solid #ffffff !important;
+      color: #ffffff !important;
+    }
+    .badge-black-line *,
+    .dark-box-white-line * {
+      color: #ffffff !important;
+    }
+
+    /* Fallback protection: white badges/cards in dark containers become black box with white line */
+    .dark-card .badge-white,
+    .black-card .badge-white,
+    .banner-dark .badge-white,
+    .banner-black .badge-white,
+    [style*="background-color: #000000"] .badge-white,
+    [style*="background-color: #333333"] .badge-white,
+    [style*="background-color:#000000"] .badge-white,
+    [style*="background-color:#333333"] .badge-white,
+    [style*="background: #000000"] .badge-white,
+    [style*="background: #333333"] .badge-white {
+      background-color: #000000 !important;
+      border: 1px solid #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    .dark-card .white-card,
+    .black-card .white-card,
+    .banner-dark .white-card,
+    .banner-black .white-card,
+    [style*="background-color: #000000"] .white-card,
+    [style*="background-color: #333333"] .white-card,
+    [style*="background-color:#000000"] .white-card,
+    [style*="background-color:#333333"] .white-card,
+    [style*="background: #000000"] .white-card,
+    [style*="background: #333333"] .white-card {
+      background-color: #000000 !important;
+      border: 1px solid #ffffff !important;
+      color: #ffffff !important;
+    }
+
+    /* Automatic text color enforcement for inline dark gray & black backgrounds */
+    [style*="background-color: #000000"],
+    [style*="background-color: #333333"],
+    [style*="background-color:#000000"],
+    [style*="background-color:#333333"],
+    [style*="background: #000000"],
+    [style*="background: #333333"],
+    [style*="background:#000000"],
+    [style*="background:#333333"] {
+      color: #ffffff !important;
+    }
+
+    [style*="background-color: #000000"] *,
+    [style*="background-color: #333333"] *,
+    [style*="background-color:#000000"] *,
+    [style*="background-color:#333333"] *,
+    [style*="background: #000000"] *,
+    [style*="background: #333333"] *,
+    [style*="background:#000000"] *,
+    [style*="background:#333333"] * {
+      color: #ffffff !important;
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    /* Card Details */
+    .card-title {
+      font-size: 21px;
+      font-weight: 900;
+      line-height: 1.35;
+      letter-spacing: -0.4px;
+      margin-bottom: 12px;
+    }
+
+    .card-text {
+      font-size: 16px;
+      font-weight: 500;
+      line-height: 1.65;
+      letter-spacing: -0.3px;
+    }
+
+    .stat-number {
+      font-size: 54px;
+      font-weight: 900;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin: 10px 0;
+    }
+
+    .stat-label {
+      font-size: 14.5px;
+      font-weight: 500;
+      line-height: 1.6;
+      letter-spacing: -0.3px;
+    }
+
+    /* Left & Right Edge Navigation Hotspots */
+    .nav-edge {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      width: 120px;
+      z-index: 99999;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, opacity 0.2s ease;
+      opacity: 0.15;
+    }
+
+    .nav-edge:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.03);
+    }
+
+    .nav-edge.left {
+      left: 0;
+    }
+
+    .nav-edge.right {
+      right: 0;
+    }
+
+    .nav-btn {
+      width: 54px;
+      height: 54px;
+      border-radius: 0;
+      background-color: #ffffff;
+      border: 1.5px solid #000000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      transition: transform 0.15s ease, background-color 0.15s ease;
+    }
+
+    .nav-edge:hover .nav-btn {
+      transform: scale(1.08);
+      background-color: #f4f5f7;
+    }
+
+    .nav-arrow {
+      width: 14px;
+      height: 14px;
+      border-top: 2.5px solid #000000;
+      border-right: 2.5px solid #000000;
+      display: inline-block;
+    }
+
+    .nav-arrow.prev {
+      transform: rotate(-135deg);
+      margin-left: 4px;
+    }
+
+    .nav-arrow.next {
+      transform: rotate(45deg);
+      margin-right: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="viewport">
+    <div id="presentation-stage">
+
+      <!-- ==================================================================
+           SLIDE 01: 표지 (COVER - 01_표지.md)
+           ================================================================== -->
+      <div class="slide active" id="slide-1" style="display: flex; flex-direction: column; justify-content: space-between; padding: 72px 96px;">
+        
+        <!-- Top Metadata Bar -->
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 1.5px solid #000000; padding-bottom: 20px;">
+          <span style="font-size: 20px; font-weight: 600; letter-spacing: -0.4px;">넥스트 러너스  오즈 코딩스쿨  디자인 부트캠프 12기</span>
+          <span style="font-size: 20px; font-weight: 600; letter-spacing: -0.4px;">네이버페이 앱 UX/UI 개선 프로젝트</span>
+        </div>
+
+        <!-- Main Slide Body -->
+        <div style="display: flex; flex-direction: column; margin: auto 0; max-width: 1600px;">
+          <div style="margin-bottom: 28px;">
+            <span class="badge badge-black" style="font-size: 18px; font-weight: 800; padding: 8px 22px;">
+              UX/UI CASE STUDY
+            </span>
+          </div>
+
+          <h1 style="font-size: 64px; font-weight: 900; line-height: 1.25; letter-spacing: -1.8px; margin-bottom: 26px;">
+            결제의 편리함은 그대로,<br />
+            혜택 경험은 더 명확하게
+          </h1>
+
+          <p style="font-size: 25px; font-weight: 500; line-height: 1.6; letter-spacing: -0.5px; max-width: 1480px; margin-bottom: 36px;">
+            “복잡해진 네이버페이 앱에서 핵심 결제와 혜택을 1초 만에 찾아주는 맞춤형 결제 경험 설계”
+          </p>
+
+          <div class="gray-card" style="padding: 16px 24px; display: inline-flex; align-items: center; gap: 14px; max-width: 1380px;">
+            <span style="font-size: 14px; font-weight: 800; text-transform: uppercase;">발표 흐름</span>
+            <span style="font-size: 14.5px; font-weight: 600;">
+              01. 표지 ➔ 02. Overview ➔ 03. Desk Research ➔ 04. VOC 1 ➔ 05. VOC 2 ➔ 06. Persona &amp; Journey Map ➔ 07. HMW + Goal ➔ 08. Solution ➔ 09. Ending
+            </span>
+          </div>
+        </div>
+
+        <!-- Bottom Metadata List -->
+        <div style="border-top: 1.5px solid #000000; padding-top: 28px; display: flex; gap: 72px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">Period</span>
+            <span style="font-size: 19px; font-weight: 500; letter-spacing: -0.3px;">2026.08.19 - 09.09 (3주 집중 프로젝트)</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">Tool</span>
+            <span style="font-size: 19px; font-weight: 500; letter-spacing: -0.3px;">Figma · Notion</span>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <span style="font-size: 22px; font-weight: 900; letter-spacing: -0.5px;">Designer</span>
+            <span style="font-size: 19px; font-weight: 500; letter-spacing: -0.3px;">1조 (일찍끝내조): 최주혜 · 박세희 · 이요섭 · 김미경 · 김슬우</span>
+          </div>
+        </div>
+
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 02: 오버뷰 (OVERVIEW - 02_오버뷰.md)
+           피그마 02. overview 레이아웃 충실 반영 (중앙 정렬 구조)
+           ================================================================== -->
+      <div class="slide" id="slide-2" style="justify-content: center; align-items: center; text-align: center;">
+        <div style="max-width: 1400px; width: 100%; display: flex; flex-direction: column; align-items: center; margin: 0 auto;">
+          <div style="margin-bottom: 32px;">
+            <span class="badge badge-black slide-kicker" style="font-size: 15px; padding: 8px 24px; letter-spacing: 1.2px; display: inline-block; margin-bottom: 0;">02. OVERVIEW · 프로젝트 출발점</span>
+          </div>
+          
+          <h2 class="slide-title" style="font-size: 52px; font-weight: 900; line-height: 1.35; letter-spacing: -1.5px; margin-bottom: 44px; word-break: keep-all; max-width: 1320px;">
+            결제의 편리함은 그대로,<br />혜택 경험은 더 명확하게 만들 수 있을까?
+          </h2>
+
+          <div style="max-width: 1160px; width: 100%; display: flex; flex-direction: column; gap: 24px;">
+            <p style="font-size: 24px; font-weight: 500; line-height: 1.75; letter-spacing: -0.5px; word-break: keep-all;">
+              사용자는 Npay로 결제하고 포인트·머니를 확인하지만, 결제가 필요한 시점에 자신과 관련 있는 혜택을 발견하거나 지금까지 받은 혜택의 가치를 이해하기는 어려웠습니다.
+            </p>
+            <p style="font-size: 24px; font-weight: 500; line-height: 1.75; letter-spacing: -0.5px; word-break: keep-all;">
+              빠른 결제를 방해하지 않으면서 지금 필요한 혜택의 확인과 받은 가치의 이해를 연결하기 위해 프로젝트를 시작했습니다.
+            </p>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 03: 데스크리서치 (03_데스크리서치.md 최신 노션 동기화)
+           ================================================================== -->
+      <div class="slide" id="slide-3">
+        <div class="headline-block">
+          <span class="slide-kicker">03. DESK RESEARCH · 시장 맥락과 Npay의 경쟁력</span>
+          <h2 class="slide-title">
+            모바일 결제가 실물카드와 대등해진 가운데, Npay는 빠른 현장결제를 위해 독립 앱으로 출시됐으며 포인트·할인은 주요 선택 이유로 나타났습니다.
+          </h2>
+          <p class="slide-desc">
+            오프라인 결제 10회 중 모바일 4.54회 vs 실물카드 4.62회 대등 이용, 독립 앱 출시 배경, 오픈서베이 2026 간편결제 브랜드 1순위 분석
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <div class="grid-3">
+            <!-- Pillar 1: Market Context -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 16px;">01. 모바일 결제 일상화</span>
+                <h3 class="card-title">실물카드와 대등한 수준</h3>
+                <div class="stat-number">4.54회</div>
+                <div class="stat-label">
+                  오프라인 결제 10회 중 실물카드는 4.62회, 모바일 결제는 4.54회로 거의 대등하게 사용되며 일상 결제 수단으로 안착 (현금은 0.85회에 불과)
+                </div>
+              </div>
+              <div class="gray-card" style="padding: 12px 18px;">
+                <span style="font-size: 13.5px; font-weight: 700;">출처: 오픈서베이, 결제 서비스 트렌드 리포트 2026</span>
+              </div>
+            </div>
+
+            <!-- Pillar 2: Dedicated App Launch -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-black-line" style="margin-bottom: 16px;">02. 독립 앱 출시</span>
+                <h3 class="card-title">현장결제 빠른 접근성 확보</h3>
+                <div class="stat-number" style="font-size: 38px; line-height: 1.35; margin: 18px 0;">빠른 현장결제</div>
+                <div class="stat-label">
+                  “더욱 빠르고 간편하게 오프라인 결제, 포인트·멤버십 적립 제공” (결제하는 순간 곧바로 실행해 쓸 수 있어야 한다는 판단 아래 독립 앱 출시)
+                </div>
+              </div>
+              <div class="gray-card" style="padding: 12px 18px;">
+                <span style="font-size: 13.5px; font-weight: 700;">출처: NAVER 공식 보도자료 (2021) · 바이라인네트워크</span>
+              </div>
+            </div>
+
+            <!-- Pillar 3: Selection Reason -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 16px;">03. 브랜드 경쟁력</span>
+                <h3 class="card-title">선택 이유 1위: 포인트·할인</h3>
+                <div class="stat-number" style="font-size: 38px; line-height: 1.35; margin: 18px 0;">간편결제 1순위</div>
+                <div class="stat-label">
+                  편의점·카페·대형마트·온라인 쇼핑·키오스크 등 대부분의 결제 상황에서 간편결제 브랜드 1순위 차지, 핵심 선택 이유는 '포인트 적립과 할인 혜택'
+                </div>
+              </div>
+              <div class="gray-card" style="padding: 12px 18px;">
+                <span style="font-size: 13.5px; font-weight: 700;">출처: 오픈서베이, 결제 서비스 트렌드 2026</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="key-insight-banner banner-black">
+            <span class="key-insight-kicker">핵심 질문 &amp; VOC 연결</span>
+            <span class="key-insight-text">
+              "그렇다면 Npay의 최대 강점인 포인트·할인 혜택이 실제 현장결제 경험에서도 충분히 발견되고 체감되고 있을까?" ➔ 사용자 목소리(VOC)로 검증
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+<!-- ==================================================================
+           SLIDE 04: VOC 1 (04_VOC 1.md)
+           ================================================================== -->
+      <div class="slide" id="slide-4">
+        <div class="headline-block">
+          <span class="slide-kicker">04. VOC 1 · GOOGLE PLAY USER REVIEWS</span>
+          <h2 class="slide-title">
+            Npay 사용자 리뷰에서는 현장결제 지연, 복잡한 탐색, 보상 대비 노력에 대한 불편이 반복적으로 나타났습니다.
+          </h2>
+          <p class="slide-desc">
+            Google Play 리뷰를 [결제 지연 시 불편], [탐색 불편], [혜택 가치] 3개 범주로 분류하고 대표 VOC와 리뷰 원문을 도출했습니다.
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <div class="grid-3">
+            <!-- Category 1 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 12px;">불편 범주 01</span>
+                <h3 class="card-title" style="font-size: 19px; line-height: 1.4;">
+                  “매장에서 결제할 때, 시간이 오래 걸리면 당황스럽고 불편해요.”
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “결제해야 할 때 인증하는데 시간이 걸려서 계산대에 줄 서있을 때 뒤에 있는 사람한테 엄청 눈치보임”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “결제할 때 급 본인인증 창이 떠서 난감해지네요.”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “카드리더기에 인식이 안 될 때가 있어서 너무 민망하고 계산줄 눈치보인 적이 한두 번이 아닙니다.”
+                  </div>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 10px 14px; font-size: 12.5px; font-weight: 800;">
+                과업 집중도 저해 및 현장 불안감 유발
+              </div>
+            </div>
+
+            <!-- Category 2 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-white" style="margin-bottom: 12px;">불편 범주 02</span>
+                <h3 class="card-title" style="font-size: 19px; line-height: 1.4;">
+                  “화면이 복잡하게 느껴지고, 원하는 기능에 접근하기 어려워요.”
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “UI/UX가 전혀 직관적이지 못함. 뭐 화면 하나 찾으려면 너무 어려움.”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “결제는 편함. 그 외 포인트, 자산, 이벤트 등 너무 버튼이 많고 복잡함.”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “쿠폰 접근은 어렵고, 광고 지저분하고, 결제내역도 간단명료하지 않네요.”
+                  </div>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 10px 14px; font-size: 12.5px; font-weight: 800;">
+                시각적 노이즈 및 메뉴 파편화
+              </div>
+            </div>
+
+            <!-- Category 3 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 12px;">불편 범주 03</span>
+                <h3 class="card-title" style="font-size: 19px; line-height: 1.4;">
+                  “혜택 반응은 좋지만, 보상 대비 노력이 커지면 아쉬움이 나타나요.”
+                </h3>
+                <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 14px;">
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “포인트 혜택은 경쟁사보다 압도적으로 좋아요. 포인트 많이 줘요.”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “클릭해서 포인트 받는 것에 간편함이 사라져서 조금 불편하네요.”
+                  </div>
+                  <div class="gray-card" style="padding: 12px 14px; font-size: 13.5px; line-height: 1.5;">
+                    • “일주일간 꾸준히 출석 체크해도 50원 상당만 적립되어 시간 투자 대비 효용성 떨어짐”
+                  </div>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 10px 14px; font-size: 12.5px; font-weight: 800;">
+                노력 대비 가치 효능감 불일치
+              </div>
+            </div>
+          </div>
+
+          <div class="key-insight-banner banner-black">
+            <span class="key-insight-kicker">핵심 인사이트</span>
+            <span class="key-insight-text">
+              사용자는 계산대 앞 결제 단일 과업 보호를 최우선으로 원하며, 화면이 복잡하거나 보상 대비 노력이 크면 혜택이 있어도 탐색과 이용 자체를 포기합니다.
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 05: VOC 2 (05_VOC 2.md)
+           ================================================================== -->
+      <div class="slide" id="slide-5">
+        <div class="headline-block">
+          <span class="slide-kicker">05. VOC 2 · SURVEY &amp; IN-DEPTH INTERVIEWS</span>
+          <h2 class="slide-title">
+            혜택 미사용은 무관심보다, 탐색에 드는 노력과 얻는 가치가 불명확한 문제에 가까웠습니다.
+          </h2>
+          <p class="slide-desc">
+            설문과 인터뷰를 통해 사용자가 혜택을 놓치는 맥락과 가치 판단 기준을 확인했습니다. 관련성·조건·보상이 바로 이해되지 않으면 참여를 포기했습니다.
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <div class="grid-3">
+            <!-- Insight 1 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 16px;">핵심 인사이트 01</span>
+                <h3 class="card-title">혜택에 대한 높은 관심</h3>
+                <p class="card-text" style="margin-bottom: 16px;">
+                  명확한 혜택은 앱 설치와 결제수단 선택에 직접적인 영향을 줍니다.
+                </p>
+                <div class="gray-card" style="padding: 16px;">
+                  <span style="font-size: 14.5px; font-weight: 600; line-height: 1.6;">
+                    자동 적립이나 현장 즉시 할인처럼 조건과 보상이 명확한 혜택은 대단히 긍정적으로 평가되었습니다.
+                  </span>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 12px; text-align: center;">
+                <span style="font-size: 13.5px; font-weight: 800;">결론: 혜택에 무관심한 것이 아님</span>
+              </div>
+            </div>
+
+            <!-- Insight 2 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-white" style="margin-bottom: 16px;">핵심 인사이트 02</span>
+                <h3 class="card-title">결제 중 탐색 행동의 한계</h3>
+                <p class="card-text" style="margin-bottom: 16px;">
+                  결제가 주목적인 사용자는 결제 순간 혜택을 별도로 찾아보지 않았습니다.
+                </p>
+                <div class="gray-card" style="padding: 16px;">
+                  <span style="font-size: 14.5px; font-weight: 600; line-height: 1.6;">
+                    자신과 관련이 있는지 바로 알기 어렵거나 추가 행동이 요구되면 탐색과 참여 자체를 즉시 중단했습니다.
+                  </span>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 12px; text-align: center;">
+                <span style="font-size: 13.5px; font-weight: 800;">결론: 결제 순간 탐색 피로 기피</span>
+              </div>
+            </div>
+
+            <!-- Insight 3 -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 460px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 16px;">핵심 인사이트 03</span>
+                <h3 class="card-title">받은 혜택의 체감 부재</h3>
+                <p class="card-text" style="margin-bottom: 16px;">
+                  이번 적립액이나 잔액은 확인해도 적립 원천과 누적 가치는 알지 못했습니다.
+                </p>
+                <div class="gray-card" style="padding: 16px;">
+                  <span style="font-size: 14.5px; font-weight: 600; line-height: 1.6;">
+                    일정 기간 동안 내가 실제로 얼마를 아꼈는지 어림짐작하는 경향이 나타나며 지속적인 가치 효능감이 저하되었습니다.
+                  </span>
+                </div>
+              </div>
+              <div class="white-card" style="padding: 12px; text-align: center;">
+                <span style="font-size: 13.5px; font-weight: 800;">결론: 누적 가치 피드백 부재</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="key-insight-banner banner-black">
+            <span class="key-insight-kicker">퍼소나 정의 연결</span>
+            <span class="key-insight-text">
+              핵심 사용자는 혜택에 무관심한 사람이 아니라, 결제를 방해받지 않으면서 필요한 혜택만 빠르게 챙기고 받은 가치까지 확인하고 싶은 '결제 중심 사용자'입니다.
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 06: PERSONA & JOURNEY MAP (피그마 프레임 686:14582 완전 통합 + 5단계 여정 맵)
+           - 좌측: 김서윤 페르소나 카드 (특성, Goal, 4대 Pain Points, Needs 칩)
+           - 우측: 5단계 사용자 여정 테이블 (Action, Emotion, Thinking, Pain Point, Needs)
+           ================================================================== -->
+      <div class="slide" id="slide-6">
+        <div class="headline-block">
+          <span class="slide-kicker">06. PERSONA &amp; JOURNEY MAP · 대표 사용자와 여정의 재정의</span>
+          <h2 class="slide-title">
+            결제를 우선하면서도 필요한 혜택과 누적 가치를 놓치지 않는 대표 사용자 여정
+          </h2>
+          <p class="slide-desc">
+            결제 중 적극적인 혜택 탐색을 전제하지 않고, 빠른 결제와 이번 적립·평상시 누적 가치 확인을 분리한 통합 모델
+          </p>
+        </div>
+
+        <div class="slide-content" style="display: grid; grid-template-columns: 390px 1fr; gap: 20px; align-items: stretch;">
+          
+          <!-- Left: Persona Profile Card (Figma Left Column Layout) -->
+          <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 20px 22px;">
+            <div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                <span class="badge badge-black">PRIMARY PERSONA</span>
+                <span style="font-size: 13px; font-weight: 700;">Android 사용자</span>
+              </div>
+              
+              <h3 style="font-size: 24px; font-weight: 900; margin-bottom: 4px;">김서윤 (32세 / 직장인)</h3>
+              <div style="font-size: 13.5px; font-weight: 700; color: #333333; margin-bottom: 14px;">
+                “필요한 혜택만 빠르게 챙기고 싶은 결제 중심 사용자”
+              </div>
+
+              <div class="gray-card" style="padding: 12px 14px; margin-bottom: 12px;">
+                <div style="font-size: 12px; font-weight: 800; margin-bottom: 4px;">사용자 특성 &amp; 행동</div>
+                <p style="font-size: 12px; font-weight: 500; line-height: 1.5;">
+                  Npay를 주로 결제와 포인트·머니 확인을 위해 사용. 결제 과정의 자연스러운 혜택은 긍정적이나, 광고 시청·게임·추가 탐색 등 별도 행동 필요 시 보상 대비 노력을 저울질해 참여 포기.
+                </p>
+              </div>
+
+              <div class="white-card" style="padding: 12px 14px; margin-bottom: 12px;">
+                <div style="font-size: 11.5px; font-weight: 800; margin-bottom: 4px;">핵심 Goal</div>
+                <div style="font-size: 13.5px; font-weight: 900; line-height: 1.4;">
+                  “결제를 빠르게 끝내면서도 현재 내가 받을 수 있는 가치 있는 혜택은 놓치고 싶지 않다.”
+                </div>
+              </div>
+
+              <div style="margin-bottom: 10px;">
+                <div style="font-size: 12px; font-weight: 800; margin-bottom: 5px;">주요 Pain Points</div>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; font-weight: 500; line-height: 1.4;">
+                  <li>• 이용 가능한 혜택이 있어도 존재 자체를 모르고 지나침</li>
+                  <li>• 혜택을 발견해도 나에게 해당되는지 바로 판단 어려움</li>
+                  <li>• 포인트를 받기 위한 추가 단계나 행동이 번거로움</li>
+                  <li>• 여러 혜택이 혼재되어 우선순위 판단이 모호함</li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Needs 4 Chips (Figma Frame 799-730 Style) -->
+            <div>
+              <div style="font-size: 12px; font-weight: 800; margin-bottom: 6px;">핵심 Needs</div>
+              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <div class="gray-card" style="padding: 7px 6px; text-align: center; font-size: 11px; font-weight: 800;">
+                  별도 탐색 없는 혜택 인지
+                </div>
+                <div class="gray-card" style="padding: 7px 6px; text-align: center; font-size: 11px; font-weight: 800;">
+                  혜택 조건 빠른 파악
+                </div>
+                <div class="gray-card" style="padding: 7px 6px; text-align: center; font-size: 11px; font-weight: 800;">
+                  혜택 가치 명확한 이해
+                </div>
+                <div class="gray-card" style="padding: 7px 6px; text-align: center; font-size: 11px; font-weight: 800;">
+                  결제 방해 없는 확인
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Journey Map (5 Stages Table Grid matching User Image) -->
+          <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; padding: 18px 20px;">
+            
+            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <span class="badge badge-black" style="font-size: 10.5px;">USER JOURNEY MAP</span>
+                <span style="font-size: 14px; font-weight: 800;">5단계 대표 사용자 경험 여정</span>
+              </div>
+              <span style="font-size: 12px; font-weight: 600; color: #555555;">현장결제 시나리오 및 감정·니즈 흐름</span>
+            </div>
+
+            <!-- 6x6 Table Grid: 1 Label Column + 5 Stage Columns -->
+            <div style="display: grid; grid-template-columns: 86px repeat(5, 1fr); gap: 6px; align-items: stretch;">
+              
+              <!-- Row 0: Headers -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 8px 4px; text-align: center;">구분</div>
+              
+              <div class="gray-card" style="padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span class="badge badge-black-line" style="font-size: 9.5px; margin-bottom: 2px; align-self: center;">STAGE 01</span>
+                <div style="font-size: 13px; font-weight: 800; line-height: 1.25;">결제 필요 발생</div>
+              </div>
+
+              <div class="dark-card" style="padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span class="badge badge-black-line" style="font-size: 9.5px; margin-bottom: 2px; align-self: center;">STAGE 02</span>
+                <div style="font-size: 13px; font-weight: 800; line-height: 1.25; color: #ffffff;">Npay 실행·결제 준비</div>
+              </div>
+
+              <div class="gray-card" style="padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span class="badge badge-black-line" style="font-size: 9.5px; margin-bottom: 2px; align-self: center;">STAGE 03</span>
+                <div style="font-size: 13px; font-weight: 800; line-height: 1.25;">결제</div>
+              </div>
+
+              <div class="gray-card" style="padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span class="badge badge-black-line" style="font-size: 9.5px; margin-bottom: 2px; align-self: center;">STAGE 04</span>
+                <div style="font-size: 13px; font-weight: 800; line-height: 1.25;">이번 적립 확인</div>
+              </div>
+
+              <div class="dark-card" style="padding: 8px 6px; text-align: center; display: flex; flex-direction: column; justify-content: center;">
+                <span class="badge badge-black-line" style="font-size: 9.5px; margin-bottom: 2px; align-self: center;">STAGE 05</span>
+                <div style="font-size: 13px; font-weight: 800; line-height: 1.25; color: #ffffff;">누적 가치 해석</div>
+              </div>
+
+              <!-- Row 1: Action -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 8px 4px; text-align: center;">Action</div>
+              
+              <div class="white-card" style="padding: 9px 10px; font-size: 11.5px; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                결제해야 하는 상황이 발생한다.
+              </div>
+
+              <div class="white-card" style="padding: 9px 10px; font-size: 11.5px; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                Npay를 실행하고 QR·등록 결제수단·포인트·머니를 확인한다.
+              </div>
+
+              <div class="white-card" style="padding: 9px 10px; font-size: 11.5px; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                선택한 결제수단으로 결제를 완료한다.
+              </div>
+
+              <div class="white-card" style="padding: 9px 10px; font-size: 11.5px; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                포인트 뽑기 버튼을 눌러 적립된 포인트 금액을 확인한다.
+              </div>
+
+              <div class="white-card" style="padding: 9px 10px; font-size: 11.5px; font-weight: 500; line-height: 1.4; display: flex; align-items: center;">
+                현재 포인트 잔액을 확인하거나, 쌓인 금액을 보고 지금까지 받은 혜택을 어림짐작한다.
+              </div>
+
+              <!-- Row 2: Emotion¹ -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 6px 4px; text-align: center;">Emotion¹</div>
+              
+              <div class="white-card" style="padding: 6px 8px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="font-size: 14px;">😐</span> 중립
+              </div>
+
+              <div class="white-card" style="padding: 6px 8px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="font-size: 14px;">😬</span> 긴장·압박
+              </div>
+
+              <div class="white-card" style="padding: 6px 8px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="font-size: 14px;">🙂</span> 만족
+              </div>
+
+              <div class="white-card" style="padding: 6px 8px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="font-size: 14px;">🙂</span> 소폭 만족
+              </div>
+
+              <div class="white-card" style="padding: 6px 8px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 4px;">
+                <span style="font-size: 14px;">🤔</span> 궁금
+              </div>
+
+              <!-- Row 3: Thinking -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 8px 4px; text-align: center;">Thinking</div>
+              
+              <div class="gray-card" style="padding: 8px 10px; font-size: 11px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                “결제해야겠다.”
+              </div>
+
+              <div class="dark-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.3; color: #ffffff; display: flex; flex-direction: column; justify-content: center;">
+                <div>“Npay로 결제하자.”</div>
+                <div style="margin-top: 2px; color: #d0d0d0;">“추가로 적용 가능한 혜택은 없을까?”</div>
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 11px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                “결제가 빠르네.”
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 11px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                “이번에는 얼마 적립됐지?”
+              </div>
+
+              <div class="black-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.3; color: #ffffff; display: flex; align-items: center;">
+                “많이 모이긴 했는데, 정확히 얼마나 혜택을 받은 거지?”
+              </div>
+
+              <!-- Row 4: Pain Point -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 8px 4px; text-align: center;">Pain Point</div>
+              
+              <div class="white-card" style="padding: 8px 10px; font-size: 12px; font-weight: 600; color: #888888; display: flex; align-items: center; justify-content: center;">
+                -
+              </div>
+
+              <div class="white-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 600; line-height: 1.4; display: flex; align-items: center;">
+                자동 적립 포인트 외에 적용 가능한 혜택을 빠르게 찾기 어렵다.
+              </div>
+
+              <div class="white-card" style="padding: 8px 10px; font-size: 12px; font-weight: 600; color: #888888; display: flex; align-items: center; justify-content: center;">
+                -
+              </div>
+
+              <div class="white-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 600; line-height: 1.4; display: flex; align-items: center;">
+                개별 적립액은 확인할 수 있지만 적립 기준·원천을 정확히 이해하기 어려울 수 있다.
+              </div>
+
+              <div class="white-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 600; line-height: 1.4; display: flex; align-items: center;">
+                현재 잔액은 확인할 수 있어도, 사용한 포인트까지 포함해 일정 기간 실제로 얼마나 적립받았는지는 파악하기 어렵다.
+              </div>
+
+              <!-- Row 5: Needs -->
+              <div class="gray-card" style="display: flex; align-items: center; justify-content: center; font-size: 11.5px; font-weight: 800; padding: 8px 4px; text-align: center;">Needs</div>
+              
+              <div class="gray-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                빠르게 결제를 시작하고 싶다.
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                결제 기능과 사용할 포인트·머니에 바로 접근하고 싶다.
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 12px; font-weight: 700; color: #888888; display: flex; align-items: center; justify-content: center;">
+                -
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                이번 결제로 왜, 얼마나 적립됐는지 간단히 알고 싶다.
+              </div>
+
+              <div class="gray-card" style="padding: 8px 10px; font-size: 10.5px; font-weight: 700; line-height: 1.35; display: flex; align-items: center;">
+                이번 달·누적 이용으로 받은 포인트 혜택의 규모를 이해하고 싶다.
+              </div>
+
+            </div>
+
+            <!-- Bottom Key Insight Banner -->
+            <div class="key-insight-banner banner-black" style="margin-top: 10px; padding: 10px 20px;">
+              <span class="key-insight-text" style="font-size: 13.5px;">
+                핵심 역할: 결제 중 적극적인 혜택 탐색을 전제하지 않고, 빠른 결제와 이번 적립·평상시 누적 가치 확인을 분리한 대표 여정
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+
+<!-- ==================================================================
+           SLIDE 07: HMW & 프로젝트골 (08_HMW + 프로젝트골.md)
+           ================================================================== -->
+      <div class="slide" id="slide-7">
+        <div class="headline-block">
+          <span class="slide-kicker">07. HMW + PROJECT GOAL · 문제 정의 및 설계 해석</span>
+          <h2 class="slide-title">
+            결제 흐름은 단순하게, 혜택의 발견과 가치는 명확하게.
+          </h2>
+          <p class="slide-desc">
+            최종 인사이트: 사용자는 더 많은 혜택보다, 결제가 필요한 시점에 자신에게 필요한 혜택을 빠르게 파악하고 실제로 얻은 혜택의 가치를 명확하게 체감할 필요가 있습니다.
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <!-- HMW Main Question Box -->
+          <div class="white-card" style="padding: 24px 32px;">
+            <span class="badge badge-black" style="margin-bottom: 10px; font-size: 13px;">HOW MIGHT WE (핵심 질문)</span>
+            <h3 style="font-size: 27px; font-weight: 900; line-height: 1.4; letter-spacing: -0.8px;">
+              “어떻게 하면 사용자가 결제 흐름을 방해받지 않으면서 자신에게 필요한 혜택을 빠르게 확인하고, 결제 후에는 실제로 얻은 혜택의 가치까지 명확하게 체감할 수 있을까?”
+            </h3>
+          </div>
+
+          <!-- 3 Design Principles -->
+          <div class="grid-3">
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 10px;">설계 해석 01</span>
+                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">결제 흐름을 방해받지 않음</h4>
+                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
+                  결제 QR 화면과 결제 과정에 혜택 확인 절차를 추가하지 않는다. 카운터 앞 1초 결제 단일 과업을 절대적으로 보장한다.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
+                결제 화면 혜택 강제 배제
+              </div>
+            </div>
+
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
+              <div>
+                <span class="badge badge-white" style="margin-bottom: 10px;">설계 해석 02</span>
+                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">필요한 혜택을 빠르게 확인</h4>
+                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
+                  홈에서 관련 혜택을 선택적으로 확인하되, 확인하지 않고 바로 결제로 이동할 수 있어야 한다. 강제 팝업이나 바텀시트 금지.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
+                선택적 혜택 발견
+              </div>
+            </div>
+
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 10px;">설계 해석 03</span>
+                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">받은 혜택의 가치 체감</h4>
+                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
+                  결제 결과와 혜택 리포트에서 이번 적립과 일정 기간의 누적 혜택을 구분해 이해할 수 있어야 한다.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
+                누적 혜택 리포트 분리
+              </div>
+            </div>
+          </div>
+
+          <!-- Final Project Goal Banner -->
+          <div class="key-insight-banner banner-black" style="padding: 20px 28px;">
+            <span class="key-insight-kicker">최종 프로젝트 GOAL</span>
+            <span class="key-insight-text">
+              결제의 간편함은 유지하면서 사용자가 자신에게 필요한 혜택을 빠르게 확인하고, 결제 후에는 이번 적립과 누적 혜택의 가치를 명확하게 이해할 수 있는 Npay 경험을 설계한다.
+            </span>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 08: 솔루션 (09_솔루션.md 원문 반영: 멘토링 이후 범위 & 가드레일)
+           ================================================================== -->
+      <div class="slide" id="slide-8">
+        <div class="headline-block">
+          <span class="slide-kicker">08. SOLUTION · 멘토링 이후 범위 결정 및 가드레일</span>
+          <h2 class="slide-title">
+            결제 화면 수정안을 제외하고, 홈의 선택적 혜택 확인과 혜택 리포트의 가치 이해를 설계합니다
+          </h2>
+          <p class="slide-desc">
+            멘토링 이후 결정: 결제 QR 화면과 현장결제 바텀시트에 혜택 정보를 추가하지 않는다. 결제 화면은 빠른 결제라는 주 과업에 집중하고, 필요한 혜택의 발견은 홈에서 선택적으로, 받은 혜택의 가치 확인은 혜택 리포트에서 담당한다.
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <!-- 3-Part Solution Structure -->
+          <div class="grid-3">
+            <!-- 1. Home Personalization -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 380px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 12px;">영역 01</span>
+                <h3 class="card-title" style="font-size: 20px;">홈 재구성·개인화 가설</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 14px; font-weight: 500; line-height: 1.55;">
+                  <li>• QR·결제 기능으로 즉시 이동하는 경로 최우선</li>
+                  <li>• `지금 챙길 혜택`: 실제 존재하고 대상·기간·조건을 판별할 수 있는 혜택만 선택적 노출</li>
+                  <li>• 강제 팝업이나 기본 노출 바텀시트 전면 배제</li>
+                  <li>• 결제 탭 상단 `이번 달 받은 혜택`을 리포트 진입점으로 활용</li>
+                </ul>
+              </div>
+              <div class="gray-card" style="padding: 10px 14px; font-size: 13px; font-weight: 800;">
+                선택적 확인 + 0초 결제 보장
+              </div>
+            </div>
+
+            <!-- 2. Payment Screen Preservation -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 380px;">
+              <div>
+                <span class="badge badge-white" style="margin-bottom: 12px;">영역 02</span>
+                <h3 class="card-title" style="font-size: 20px;">결제 화면 (과업 보호)</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 14px; font-weight: 500; line-height: 1.55;">
+                  <li>• 현재의 빠른 결제 단일 과업을 100% 유지</li>
+                  <li>• <strong>솔루션 제외 항목</strong>: QR 주변 혜택, 결제수단별 혜택 비교, 결제 중 쿠폰·이벤트 탐색 전면 배제</li>
+                  <li>• 카운터 앞 사용자에게 어떠한 시각적 노이즈나 인지적 부담도 주지 않음</li>
+                </ul>
+              </div>
+              <div class="gray-card" style="padding: 10px 14px; font-size: 13px; font-weight: 800;">
+                스캔 단일 과업 절대 유지
+              </div>
+            </div>
+
+            <!-- 3. Benefit Report -->
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 380px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 12px;">영역 03</span>
+                <h3 class="card-title" style="font-size: 20px;">혜택 리포트 (가치 체감)</h3>
+                <ul style="list-style: none; display: flex; flex-direction: column; gap: 7px; font-size: 14px; font-weight: 500; line-height: 1.55;">
+                  <li>• 이번 달 실제로 받거나 적용된 혜택 총액·기간·구성 원천 시각화</li>
+                  <li>• 이번 적립액 / 일정 기간 받은 혜택 / 현재 포인트 잔액 명확 구분</li>
+                  <li>• 받은 혜택과 받을 수 있는 혜택 섹션을 분리해 혼동 방지</li>
+                </ul>
+              </div>
+              <div class="gray-card" style="padding: 10px 14px; font-size: 13px; font-weight: 800;">
+                체감형 누적 가치 리포트
+              </div>
+            </div>
+          </div>
+
+          <!-- Guardrails Banner (Dark Gray shape with White text, NO border) -->
+          <div class="dark-card" style="padding: 18px 26px;">
+            <div style="font-size: 13px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px;">
+              핵심 가드레일 (GUARDRAILS)
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 13.5px; font-weight: 600;">
+              <div>1. 홈의 혜택 정보가 결제 진입과 QR 접근을 지연시키지 않는가?</div>
+              <div>2. 혜택을 확인하지 않아도 결제를 즉시 완료할 수 있는가?</div>
+              <div>3. 리포트의 총액이 포인트 잔액·이번 적립·할인액과 혼동되지 않는가?</div>
+              <div>4. 적립 후 미사용 포인트를 '사용한 혜택'으로 잘못 표현하지 않는가?</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- ==================================================================
+           SLIDE 09: 엔딩 (10_엔딩.md)
+           ================================================================== -->
+      <div class="slide" id="slide-9">
+        <div class="headline-block" style="text-align: center; max-width: 1400px; margin: 0 auto 28px auto;">
+          <div style="margin-bottom: 12px;">
+            <span class="badge badge-black slide-kicker" style="font-size: 15px; padding: 8px 24px; letter-spacing: 1.2px; display: inline-block;">09. ENDING · 최종 요약 및 크레딧</span>
+          </div>
+          <h2 class="slide-title" style="font-size: 46px; margin-bottom: 14px;">
+            결제의 편리함은 지키고, 혜택의 가치는 더 명확해집니다
+          </h2>
+          <p class="slide-desc" style="margin: 0 auto; font-size: 21px;">
+            결제 흐름은 단순하게, 혜택의 발견과 가치는 명확하게 · 브랜드 식별과 팀 크레딧으로 발표를 마무리합니다.
+          </p>
+        </div>
+
+        <div class="slide-content">
+          <div class="grid-3" style="gap: 22px;">
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 360px;">
+              <div>
+                <span class="badge badge-dark" style="margin-bottom: 16px;">SUMMARY 01</span>
+                <h3 class="card-title">결제 화면 절대적 보호</h3>
+                <p class="card-text">
+                  매장 카운터 앞 1초 결제 단일 과업을 위해 결제 QR 화면에는 어떠한 혜택 탐색 절차도 추가하지 않고 즉시 스캔에만 집중하도록 보호했습니다.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 14px 18px;">
+                <span style="font-weight: 800; font-size: 14px;">방해 없는 빠른 현장결제 유지</span>
+              </div>
+            </div>
+
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 360px;">
+              <div>
+                <span class="badge badge-white" style="margin-bottom: 16px;">SUMMARY 02</span>
+                <h3 class="card-title">선택적 혜택 발견</h3>
+                <p class="card-text">
+                  강제 팝업이나 바텀시트 없이 홈에서 조건이 판별된 유효 혜택만 선택적으로 노출하여, 확인 없이도 즉시 결제 진입이 가능하도록 설계했습니다.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 14px 18px;">
+                <span style="font-weight: 800; font-size: 14px;">노력 대비 가치 불명확성 해소</span>
+              </div>
+            </div>
+
+            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 360px;">
+              <div>
+                <span class="badge badge-black" style="margin-bottom: 16px;">SUMMARY 03</span>
+                <h3 class="card-title">누적 가치 체감 리포트</h3>
+                <p class="card-text">
+                  단편적 잔액 확인에서 탈피하여, 일정 기간 동안 실제로 받은 혜택의 총액·기간·구성 원천을 명확히 시각화하여 지속적 효능감을 완성했습니다.
+                </p>
+              </div>
+              <div class="gray-card" style="padding: 14px 18px;">
+                <span style="font-weight: 800; font-size: 14px;">화폐 가치 체감과 락인 강화</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Team Credits & Q&A Box -->
+          <div class="white-card" style="padding: 24px 36px; display: flex; align-items: center; justify-content: space-between; margin-top: 10px;">
+            <div>
+              <div style="font-size: 13px; font-weight: 800; letter-spacing: 1.2px; margin-bottom: 4px;">PROJECT TEAM</div>
+              <div style="font-size: 20px; font-weight: 900;">
+                1조 (일찍끝내조): 최주혜 · 박세희 · 이요섭 · 김미경 · 김슬우
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <span class="badge badge-black" style="font-size: 15px; font-weight: 800; padding: 12px 28px;">
+                경청해 주셔서 감사합니다 · Q&amp;A
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Left & Right Edge Navigation Hotspots -->
+  <div class="nav-edge left" id="nav-left" title="이전 장으로">
+    <div class="nav-btn">
+      <span class="nav-arrow prev"></span>
+    </div>
+  </div>
+
+  <div class="nav-edge right" id="nav-right" title="다음 장으로">
+    <div class="nav-btn">
+      <span class="nav-arrow next"></span>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const slides = document.querySelectorAll('.slide');
+      const totalSlides = slides.length;
+      let currentSlide = 1;
+
+      // Auto Scale Stage to fit 1920x1080 into Viewport
+      function resizeStage() {
+        const stage = document.getElementById('presentation-stage');
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const scaleX = viewportWidth / 1920;
+        const scaleY = viewportHeight / 1080;
+        const scale = Math.min(scaleX, scaleY);
+
+        stage.style.transform = `scale(${scale})`;
+      }
+
+      window.addEventListener('resize', resizeStage);
+      resizeStage();
+
+      // Slide Navigation
+      function updateSlide() {
+        slides.forEach((slide, index) => {
+          if (index + 1 === currentSlide) {
+            slide.classList.add('active');
+          } else {
+            slide.classList.remove('active');
+          }
+        });
+      }
+
+      function nextSlide() {
+        if (currentSlide < totalSlides) {
+          currentSlide++;
+          updateSlide();
+        }
+      }
+
+      function prevSlide() {
+        if (currentSlide > 1) {
+          currentSlide--;
+          updateSlide();
+        }
+      }
+
+      function goToSlide(num) {
+        if (num >= 1 && num <= totalSlides) {
+          currentSlide = num;
+          updateSlide();
+        }
+      }
+
+      // Edge Navigation Clicks
+      document.getElementById('nav-left').addEventListener('click', (e) => {
+        e.stopPropagation();
+        prevSlide();
+      });
+
+      document.getElementById('nav-right').addEventListener('click', (e) => {
+        e.stopPropagation();
+        nextSlide();
+      });
+
+      // Keyboard navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ' || e.key === 'PageDown') {
+          e.preventDefault();
+          nextSlide();
+        } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp' || e.key === 'PageUp') {
+          e.preventDefault();
+          prevSlide();
+        } else if (e.key === 'Home') {
+          e.preventDefault();
+          goToSlide(1);
+        } else if (e.key === 'End') {
+          e.preventDefault();
+          goToSlide(totalSlides);
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
