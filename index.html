@@ -993,14 +993,6 @@
               </div>
             </aside>
           </div>
-
-          <div style="background-color: #333333; border-radius: 8px; padding: 16px 22px; flex-shrink: 0;">
-            <div style="display: flex; align-items: baseline; gap: 18px;">
-              <span style="font-size: 12px; font-weight: 800; color: #ffffff; flex-shrink: 0;">설계 시사점</span>
-              <p style="font-size: 20px; font-weight: 800; line-height: 1.5; color: #ffffff; word-break: keep-all;">쌓인 포인트로 느끼던 가치를, 실제로 받은 혜택의 규모와 연결해 이해하도록 도울 필요가 있습니다.</p>
-            </div>
-            <p style="font-size: 11px; line-height: 1.5; color: #ffffff; margin-top: 5px;">누적 혜택의 시인성·접근성을 개선했을 때 혜택 체감이 높아지는지는 후속 검증 과제입니다.</p>
-          </div>
         </div>
       </div>
 
@@ -1285,74 +1277,28 @@
            SLIDE 08: HMW & 프로젝트골 (08_HMW + 프로젝트골.md)
            ================================================================== -->
       <div class="slide" id="slide-8">
-        <div class="headline-block">
-          <span class="slide-kicker">08. HMW + PROJECT GOAL · 문제 정의 및 설계 해석</span>
-          <h2 class="slide-title">
-            결제 흐름은 단순하게, 혜택의 발견과 가치는 명확하게.
-          </h2>
-          <p class="slide-desc">
-            최종 인사이트: 사용자는 더 많은 혜택보다, 결제가 필요한 시점에 자신에게 필요한 혜택을 빠르게 파악하고 실제로 얻은 혜택의 가치를 명확하게 체감할 필요가 있습니다.
-          </p>
+        <div class="headline-block" style="margin-bottom: 0;">
+          <span class="slide-kicker">08. HMW + PROJECT GOAL</span>
         </div>
 
-        <div class="slide-content">
-          <!-- HMW Main Question Box -->
-          <div class="white-card" style="padding: 26px 34px;">
-            <span class="badge badge-black" style="margin-bottom: 10px; font-size: 13px;">HOW MIGHT WE (핵심 질문)</span>
-            <h3 style="font-size: 27px; font-weight: 900; line-height: 1.4; letter-spacing: -0.8px;">
-              “어떻게 하면 사용자가 결제 흐름을 방해받지 않으면서 자신에게 필요한 혜택을 빠르게 확인하고, 결제 후에는 실제로 얻은 혜택의 가치까지 명확하게 체감할 수 있을까?”
-            </h3>
-          </div>
+        <div class="slide-content" style="gap: 32px;">
+          <section class="white-card" style="padding: 44px 48px; min-height: 316px; display: flex; flex-direction: column; justify-content: center;">
+            <span class="badge badge-black" style="align-self: flex-start; margin-bottom: 22px; font-size: 16px;">HOW MIGHT WE</span>
+            <h2 data-content="hmw" style="font-size: 38px; font-weight: 900; line-height: 1.6; letter-spacing: -0.8px; word-break: keep-all;">
+              “어떻게 하면 사용자가 결제 흐름을 방해받지 않으면서<br />
+              자신에게 필요한 혜택을 빠르게 확인하고,<br />
+              결제 후에는 실제로 얻은 혜택의 가치까지 명확하게 체감할 수 있을까?”
+            </h2>
+          </section>
 
-          <!-- 3 Design Principles -->
-          <div class="grid-3">
-            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
-              <div>
-                <span class="badge badge-dark" style="margin-bottom: 10px;">설계 해석 01</span>
-                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">결제 흐름을 방해받지 않음</h4>
-                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
-                  결제 QR 화면과 결제 과정에 혜택 확인 절차를 추가하지 않는다. 카운터 앞 1초 결제 단일 과업을 절대적으로 보장한다.
-                </p>
-              </div>
-              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
-                결제 화면 혜택 강제 배제
-              </div>
-            </div>
-
-            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
-              <div>
-                <span class="badge badge-dark" style="margin-bottom: 10px;">설계 해석 02</span>
-                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">필요한 혜택을 빠르게 확인</h4>
-                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
-                  홈에서 관련 혜택을 선택적으로 확인하되, 확인하지 않고 바로 결제로 이동할 수 있어야 한다. 강제 팝업이나 바텀시트 금지.
-                </p>
-              </div>
-              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
-                선택적 혜택 발견
-              </div>
-            </div>
-
-            <div class="white-card" style="display: flex; flex-direction: column; justify-content: space-between; height: 260px;">
-              <div>
-                <span class="badge badge-black" style="margin-bottom: 10px;">설계 해석 03</span>
-                <h4 style="font-size: 18.5px; font-weight: 800; margin-bottom: 8px;">받은 혜택의 가치 체감</h4>
-                <p style="font-size: 14.5px; font-weight: 500; line-height: 1.6;">
-                  결제 결과와 혜택 리포트에서 이번 적립과 일정 기간의 누적 혜택을 구분해 이해할 수 있어야 한다.
-                </p>
-              </div>
-              <div class="gray-card" style="padding: 8px 12px; font-size: 12px; font-weight: 800; text-align: center;">
-                누적 혜택 리포트 분리
-              </div>
-            </div>
-          </div>
-
-          <!-- Final Project Goal Banner -->
-          <div class="key-insight-banner banner-black" style="padding: 20px 28px;">
-            <span class="key-insight-kicker">최종 프로젝트 GOAL</span>
-            <span class="key-insight-text">
-              결제의 간편함은 유지하면서 사용자가 자신에게 필요한 혜택을 빠르게 확인하고, 결제 후에는 이번 적립과 누적 혜택의 가치를 명확하게 이해할 수 있는 Npay 경험을 설계한다.
-            </span>
-          </div>
+          <section class="key-insight-banner banner-black" style="padding: 44px 48px; min-height: 276px; display: flex; flex-direction: column; justify-content: center;">
+            <span class="key-insight-kicker" style="font-size: 16px; margin-bottom: 22px;">PROJECT GOAL</span>
+            <p class="key-insight-text" data-content="goal" style="font-size: 32px; font-weight: 800; line-height: 1.65; word-break: keep-all;">
+              결제의 간편함은 유지하면서 사용자가 자신에게 필요한 혜택을 빠르게 확인하고,<br />
+              결제 후에는 이번 적립과 누적 혜택의 가치를 명확하게 이해할 수 있는<br />
+              Npay 경험을 설계한다.
+            </p>
+          </section>
         </div>
       </div>
 
